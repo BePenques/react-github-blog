@@ -1,15 +1,37 @@
 import { IssueStyle } from "./styles";
+import Markdown from 'react-markdown'
+import { format, formatDistanceToNow } from 'date-fns';
+import { ptBR } from 'date-fns/locale/pt-BR';
 
-export function Issue(){
+interface GithubIssue{
+  title: string;
+  description: string;
+  created_at: string;
+}
+
+export function Issue({ title, description, created_at }:GithubIssue){
+
+  const publishedDateFormated = format(created_at, "d 'de' LLLL 'às' HH:mm'h'", {
+    locale: ptBR,
+  })
+  const publishedDateRelativeNow = formatDistanceToNow(created_at,{
+    locale: ptBR,
+    addSuffix: true
+  })
+
     return(
         <IssueStyle>  
             <div>
-              <h3>JavaScript data types and data structures</h3>
-              <span>Há 1 dia </span>
+              <h3>{title}</h3>
+              {/* <span>Há 1 dia </span> */}
+              <time title={publishedDateFormated} dateTime={created_at}>
+                   {publishedDateRelativeNow}
+                </time>
             </div>
-            <p>
+            <p><Markdown>{description}</Markdown></p>
+            {/* <p>
             Programming languages all have built-in data structures, but these often differ from one language to another. This article attempts to list the built-in data structures available in...
-            </p>     
+            </p>      */}
           </IssueStyle>
     )
 }

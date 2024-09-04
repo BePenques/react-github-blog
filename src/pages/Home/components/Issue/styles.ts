@@ -20,17 +20,24 @@ export const IssueStyle = styled.div`
         width: 84%;
         font-size: 20px;
         line-height: 160%;
-        font:  ${props => props.theme["base-title"]}; 
+        color:  ${props => props.theme["base-title"]}; 
     }
-    span{
+    time{
         font-size: 14px;
+        max-width: 80px;
     }
    }
    
    p{
     font-size: 16px;
     line-height: 160%;
-    font:  ${props => props.theme["base-text"]};
+    color:  ${props => props.theme["base-text"]};
+    max-height: 100px;
+    overflow: hidden; // Removendo barra de rolagem
+    text-overflow: ellipsis; // Adicionando "..." ao final
+    display: -webkit-box;
+    -webkit-line-clamp: 4; // Quantidade de linhas
+    -webkit-box-orient: vertical; 
 
    }
 
