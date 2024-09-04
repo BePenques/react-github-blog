@@ -1,10 +1,49 @@
+ 
+ 
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Container, GithubUserTags, BoxIssueInformations, HeaderIssue, BoxContent } from "./styles";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import {  faArrowUpRightFromSquare, faCalendarDay, faChevronLeft, faComment } from "@fortawesome/free-solid-svg-icons";
+import { useParams } from "react-router-dom";
+import { api } from "../../lib/axios";
+import { useEffect, useState } from "react";
+import { format, formatDistanceToNow  } from 'date-fns';
+import {ptBR}  from 'date-fns/locale/pt-BR';
 
 export function Details(){
+
+    interface GithubIssueDetails{
+        title: string;
+        body: string;
+        created_at: string;
+        number: number;
+        user:{
+            login: string;
+        }
+      }
+
+    const { issueNumber } = useParams()
+    const [GithubIssuesDetails, setGithubIssuesDetails] = useState<GithubIssueDetails>()
+
+    async function fetchIssueDetailsData(){
+        const response = await api.get(`https://api.github.com/repos/bepenques/react-github-blog/issues/${issueNumber}`)
+        setGithubIssuesDetails(response.data)
+      }
+  
+    useEffect(()=>{       
+         fetchIssueDetailsData();        
+      },[])
+    
+  
+    const publishedDateFormated = format(GithubIssuesDetails?.created_at || '', "d 'de' LLLL 'às' HH:mm'h'", {
+        locale: ptBR,
+    });
+    const publishedDateRelativeNow = formatDistanceToNow(GithubIssuesDetails?.created_at || '',{
+        locale: ptBR,
+        addSuffix: true
+    })
+    
     return (
     <Container>
         <BoxIssueInformations>
@@ -17,15 +56,17 @@ export function Details(){
                 <FontAwesomeIcon icon={faArrowUpRightFromSquare} fontSize="12"/>
                 </span>
             </HeaderIssue>
-            <h3>JavaScript data types and data structures</h3>
+            <h3>{GithubIssuesDetails?.title}</h3>
             <GithubUserTags>
                 <span>
                     <FontAwesomeIcon icon={faGithub} color="#3A536B" fontSize={18}/>
-                    <p>cameronwll</p>
+                    <p>{GithubIssuesDetails?.user.login}</p>
                 </span>
                 <span>
                     <FontAwesomeIcon icon={faCalendarDay} color="#3A536B" fontSize={18}/>
-                    <p>Há 1 dia</p>
+                    <time title={publishedDateFormated} dateTime={GithubIssuesDetails?.created_at.toString()}>
+                        {publishedDateRelativeNow}
+                    </time>
                 </span>
                 <span>
                     <FontAwesomeIcon icon={faComment} color="#3A536B" fontSize={18}/>

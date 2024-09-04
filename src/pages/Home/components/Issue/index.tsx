@@ -26,7 +26,7 @@ export function Issue({ title, description, created_at }:GithubIssue){
               {/* <span>Há 1 dia </span> */}
               <time title={publishedDateFormated} dateTime={created_at}>
                    {publishedDateRelativeNow}
-                </time>
+              </time>
             </div>
             <p><Markdown>{description}</Markdown></p>
             {/* <p>
