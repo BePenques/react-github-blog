@@ -23,8 +23,7 @@ export const BoxUserInformations = styled.section`
     gap: 2rem;
 `
 
-//--------search form
-export const SearchBox = styled.div`
+export const SearchBoxStyle = styled.div`
    display: flex;
    flex-direction: column;
    margin-top: 72px;
@@ -43,6 +42,7 @@ export const SearchBox = styled.div`
    }
 `
 export const SearchInput = styled.input`
+    width: 100%;
     height: 50px;
     border-radius: 6px;
     background: ${props => props.theme["base-input"]};
@@ -54,6 +54,7 @@ export const SearchInput = styled.input`
         color:  ${props => props.theme["base-label"]};
     }
 `
+
 //-----IssuesList
 export const IssuesList = styled.div`
     margin-top: 48px;

@@ -1,14 +1,27 @@
-import { Container, BoxUserInformations, SearchBox, SearchInput, IssuesList } from "./styles";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { Container, BoxUserInformations,IssuesList, SearchBoxStyle, SearchInput } from "./styles";
 import { GithubUserInformations } from "./components/GithubUserInformations";
 import { Issue } from "./components/Issue";
-import { useEffect, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { api } from "../../lib/axios";
 import { useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import * as z from 'zod'
+import { zodResolver } from "@hookform/resolvers/zod";
 
+const searchFormSchema = z.object({
+  query: z.string()
+})
+
+type searchFormInputs = z.infer<typeof searchFormSchema>;
 
 export function Home(){
 
   const navigate = useNavigate()
+
+  const { register, handleSubmit} = useForm<searchFormInputs>({
+    resolver: zodResolver(searchFormSchema)
+  })
 
   interface GithubIssues{
     total_count: number;
@@ -20,41 +33,56 @@ export function Home(){
     body: string;
     created_at: string;
     number: number;
-    total_count: number;
   }
 
   const [GithubIssuesList, setGithubIssuesList] = useState<GithubIssues>()
+  const [SearchString, setSearchString] = useState<string>('')
+  const [totalCount, setTotalCount] = useState<number>(0)
 
     function redirectDetails(issueNumber: number){
       navigate(`/details/${issueNumber}`)
     }
 
     async function fetchUserData(){
-      const response = await api.get(`https://api.github.com/search/issues?q=repo:BePenques/react-github-blog`)
-      console.log(response)
-      setGithubIssuesList({total_count: response.data.total_count, issues: response.data.items})
+      
+      const response = await api.get(`https://api.github.com/search/issues?q=${SearchString}%20repo:BePenques/react-github-blog`)
+     
+      if(SearchString.length == 0){
+        setTotalCount(response.data.total_count)
+      }
+      setGithubIssuesList({total_count: (totalCount ? totalCount : response.data.total_count), issues: response.data.items})
      
     }
 
     useEffect(()=>{       
       fetchUserData();
       
-    },[])
+    },[SearchString])
 
-   
+    function handleSearchStringSubmit(data: searchFormInputs){
+    
+      setSearchString(data.query)
+     
+    }
   
     return (
     <Container>
         <BoxUserInformations>         
             <GithubUserInformations/>
         </BoxUserInformations>
-        <SearchBox>
+        <SearchBoxStyle>
           <div>
             <h3>Publicações</h3>
             <p>{GithubIssuesList?.total_count} Publicações</p>
           </div>
-          <SearchInput type="text" placeholder="Buscar conteúdo"/>
-        </SearchBox>
+          <form onSubmit={handleSubmit(handleSearchStringSubmit)}>
+            <SearchInput 
+            type="text" 
+            placeholder="Buscar conteúdo"
+            {...register('query')}
+            />
+          </form>
+        </SearchBoxStyle> 
         <IssuesList>
           {GithubIssuesList?.issues.map(issue => {
             return (
