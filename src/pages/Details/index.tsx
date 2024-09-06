@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
  
  
 
@@ -8,8 +9,9 @@ import {  faArrowUpRightFromSquare, faCalendarDay, faChevronLeft, faComment } fr
 import { useParams } from "react-router-dom";
 import { api } from "../../lib/axios";
 import { useEffect, useState } from "react";
-import { format, formatDistanceToNow  } from 'date-fns';
+import {  formatDistanceToNow  } from 'date-fns';
 import {ptBR}  from 'date-fns/locale/pt-BR';
+import { format, toZonedTime } from 'date-fns-tz';
 
 export function Details(){
 
@@ -34,12 +36,19 @@ export function Details(){
     useEffect(()=>{       
          fetchIssueDetailsData();        
       },[])
-    
-  
-    const publishedDateFormated = format(GithubIssuesDetails?.created_at || '', "d 'de' LLLL 'às' HH:mm'h'", {
-        locale: ptBR,
-    });
-    const publishedDateRelativeNow = formatDistanceToNow(GithubIssuesDetails?.created_at || '',{
+
+      const createdAt = GithubIssuesDetails?.created_at;
+    //   if (createdAt) {
+          const zonedDate = toZonedTime(new Date(createdAt || ''), 'America/Sao_Paulo'); // exemplo para fuso horário de SP
+          const publishedDateFormated = format(zonedDate, "d 'de' LLLL 'às' HH:mm'h'", {
+              locale: ptBR,
+          });
+    //   }
+
+    // const publishedDateFormated = format(GithubIssuesDetails?.created_at || '', "d 'de' LLLL 'às' HH:mm'h'", {
+    //     locale: ptBR,
+    // });
+    const publishedDateRelativeNow = formatDistanceToNow(zonedDate || '',{
         locale: ptBR,
         addSuffix: true
     })
@@ -80,4 +89,8 @@ export function Details(){
         </BoxContent>
     </Container>
     )
+}
+
+function utcToZonedTime(arg0: Date, arg1: string) {
+    throw new Error("Function not implemented.");
 }
