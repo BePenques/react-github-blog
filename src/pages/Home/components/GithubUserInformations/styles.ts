@@ -33,13 +33,15 @@ export const GithubUserTags = styled.div`
    }
 `
 
-export const GithubLink = styled.div`
+export const GithubLink = styled.a`
     display: flex;
     flex-direction: row;
     align-items: baseline;
     gap: 8px;
     float: right ;
     margin-right: 32px;
+    cursor: pointer;
+    color:  ${props => props.theme["blue"]};
     p{
         font-size: 12px;
     }

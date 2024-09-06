@@ -29,9 +29,6 @@ export function Issue({ title, description, created_at }:GithubIssue){
               </time>
             </div>
             <p><Markdown>{description}</Markdown></p>
-            {/* <p>
-            Programming languages all have built-in data structures, but these often differ from one language to another. This article attempts to list the built-in data structures available in...
-            </p>      */}
           </IssueStyle>
     )
 }

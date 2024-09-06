@@ -15,7 +15,8 @@ export function GithubUserInformations(){
         name: string;
         followers: number;
         bio: string;
-        company: string
+        company: string;
+        html_url: string
       }
     
       const [GithubUserInfos, setGithubUserInfos] = useState<GithubUserInfos>()
@@ -31,14 +32,24 @@ export function GithubUserInformations(){
           
         },[])
 
+        function redirectGithub(){
+            window.open(
+                `${GithubUserInfos?.html_url}`,
+                '_blank'
+              );
+           }
+
     return(
         <>
             <GithubImage src={GithubUserInfos?.avatar_url} alt="" />
             <GithubUserInformationsStyle>
-                <GithubLink>
+                {/* <a  onClick={() => redirectGithub()}> */}
+                <GithubLink onClick={() => redirectGithub()}>           
                     <p>GITHUB</p>
-                    <FontAwesomeIcon icon={faArrowUpRightFromSquare} fontSize="12"/>
-                </GithubLink>        
+                    
+                    <FontAwesomeIcon icon={faArrowUpRightFromSquare} fontSize="12"/> 
+                </GithubLink>      
+                {/* </a>   */}
                 <h3>{GithubUserInfos?.name}</h3>
                 <p>{GithubUserInfos?.bio}</p>
                 <GithubUserTags>

@@ -35,6 +35,7 @@ span{
     color:  ${props => props.theme["blue"]};
     font-size: 12px;
     gap: 3.5px;
+    cursor: pointer;
 }
 `
 

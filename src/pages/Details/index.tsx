@@ -9,9 +9,11 @@ import {  faArrowUpRightFromSquare, faCalendarDay, faChevronLeft, faComment } fr
 import { useParams } from "react-router-dom";
 import { api } from "../../lib/axios";
 import { useEffect, useState } from "react";
-import {  formatDistanceToNow  } from 'date-fns';
-import {ptBR}  from 'date-fns/locale/pt-BR';
-import { format, toZonedTime } from 'date-fns-tz';
+import Markdown from 'react-markdown'
+import { useNavigate } from "react-router-dom";
+// import {  formatDistanceToNow  } from 'date-fns';
+// import {ptBR}  from 'date-fns/locale/pt-BR';
+// import { format, toZonedTime } from 'date-fns-tz';
 
 export function Details(){
 
@@ -20,6 +22,8 @@ export function Details(){
         body: string;
         created_at: string;
         number: number;
+        comments: number;
+        html_url: string;
         user:{
             login: string;
         }
@@ -27,6 +31,7 @@ export function Details(){
 
     const { issueNumber } = useParams()
     const [GithubIssuesDetails, setGithubIssuesDetails] = useState<GithubIssueDetails>()
+    const navigate = useNavigate()
 
     async function fetchIssueDetailsData(){
         const response = await api.get(`https://api.github.com/repos/bepenques/react-github-blog/issues/${issueNumber}`)
@@ -34,35 +39,46 @@ export function Details(){
       }
   
     useEffect(()=>{       
-         fetchIssueDetailsData();        
+         fetchIssueDetailsData();
       },[])
 
-      const createdAt = GithubIssuesDetails?.created_at;
+    //   const createdAt = GithubIssuesDetails?.created_at;
     //   if (createdAt) {
-          const zonedDate = toZonedTime(new Date(createdAt || ''), 'America/Sao_Paulo'); // exemplo para fuso horário de SP
-          const publishedDateFormated = format(zonedDate, "d 'de' LLLL 'às' HH:mm'h'", {
-              locale: ptBR,
-          });
+        //   const zonedDate = toZonedTime(new Date(createdAt || ''), 'America/Sao_Paulo'); // exemplo para fuso horário de SP
+        //   const publishedDateFormated = format(zonedDate, "d 'de' LLLL 'às' HH:mm'h'", {
+        //       locale: ptBR,
+        //   });
     //   }
 
     // const publishedDateFormated = format(GithubIssuesDetails?.created_at || '', "d 'de' LLLL 'às' HH:mm'h'", {
     //     locale: ptBR,
     // });
-    const publishedDateRelativeNow = formatDistanceToNow(zonedDate || '',{
-        locale: ptBR,
-        addSuffix: true
-    })
+    // const publishedDateRelativeNow = formatDistanceToNow(zonedDate || '',{
+    //     locale: ptBR,
+    //     addSuffix: true
+    // })
+   function redirectGithub(){
+    window.open(
+        `${GithubIssuesDetails?.html_url}`,
+        '_blank' 
+      );
+   }
     
     return (
     <Container>
         <BoxIssueInformations>
             <HeaderIssue>
                 <span>
-                <FontAwesomeIcon icon={faChevronLeft} color="#3294F8" fontSize={12}/>
-                    VOLTAR
+                <a  onClick={() => navigate(-1)}>
+                    <FontAwesomeIcon icon={faChevronLeft} color="#3294F8" fontSize={12}/>
+                        VOLTAR
+                </a>
                 </span>
-                <span>VER NO GITHUB
-                <FontAwesomeIcon icon={faArrowUpRightFromSquare} fontSize="12"/>
+                <span>
+                <a  onClick={() => redirectGithub()}>
+                    VER NO GITHUB
+                    <FontAwesomeIcon icon={faArrowUpRightFromSquare} fontSize="12"/>
+                </a>
                 </span>
             </HeaderIssue>
             <h3>{GithubIssuesDetails?.title}</h3>
@@ -73,19 +89,18 @@ export function Details(){
                 </span>
                 <span>
                     <FontAwesomeIcon icon={faCalendarDay} color="#3A536B" fontSize={18}/>
-                    <time title={publishedDateFormated} dateTime={GithubIssuesDetails?.created_at.toString()}>
+                    {/* <time title={publishedDateFormated} dateTime={GithubIssuesDetails?.created_at.toString()}>
                         {publishedDateRelativeNow}
-                    </time>
+                    </time> */}
                 </span>
                 <span>
                     <FontAwesomeIcon icon={faComment} color="#3A536B" fontSize={18}/>
-                    <p>5 comentários</p>
+                    <p>{GithubIssuesDetails?.comments} comentários</p>
                 </span>
             </GithubUserTags>
         </BoxIssueInformations>
         <BoxContent>
-            <p>Programming languages all have built-in data structures, but these often differ from one language to another. This article attempts to list the built-in data structures available in JavaScript and what properties they have. These can be used to build other data structures. Wherever possible, comparisons with other languages are drawn.
-            </p>
+             <p><Markdown>{GithubIssuesDetails?.body}</Markdown></p>
         </BoxContent>
     </Container>
     )

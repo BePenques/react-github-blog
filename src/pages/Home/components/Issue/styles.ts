@@ -2,16 +2,14 @@ import styled from 'styled-components';
 
 export const IssueStyle = styled.div`
    max-width: 400px;
-   /* width: 390px; */
    height: 260px;
    background: ${props => props.theme["base-post"]}; 
-   /* border: 1px solid red; */
-   /* margin-top: 1rem; */
    border-radius: 10px;
    padding: 2rem;
    gap: 20px;
    display: flex;
    flex-direction: column;
+   cursor: pointer;
 
    div{
     display: flex;

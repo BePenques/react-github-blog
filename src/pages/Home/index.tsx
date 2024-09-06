@@ -10,14 +10,20 @@ export function Home(){
 
   const navigate = useNavigate()
 
-  interface GithubIssue{
+  interface GithubIssues{
+    total_count: number;
+    issues: GithubIssueitem[]
+  }
+
+  interface GithubIssueitem{
     title: string;
     body: string;
     created_at: string;
     number: number;
+    total_count: number;
   }
 
-  const [GithubIssuesList, setGithubIssuesList] = useState<GithubIssue[]>([])
+  const [GithubIssuesList, setGithubIssuesList] = useState<GithubIssues>()
 
     function redirectDetails(issueNumber: number){
       navigate(`/details/${issueNumber}`)
@@ -26,13 +32,16 @@ export function Home(){
     async function fetchUserData(){
       const response = await api.get(`https://api.github.com/search/issues?q=repo:BePenques/react-github-blog`)
       console.log(response)
-      setGithubIssuesList(response.data.items)
+      setGithubIssuesList({total_count: response.data.total_count, issues: response.data.items})
+     
     }
 
     useEffect(()=>{       
       fetchUserData();
       
     },[])
+
+   
   
     return (
     <Container>
@@ -42,26 +51,18 @@ export function Home(){
         <SearchBox>
           <div>
             <h3>Publicações</h3>
-            <p>6 Publicações</p>
+            <p>{GithubIssuesList?.total_count} Publicações</p>
           </div>
           <SearchInput type="text" placeholder="Buscar conteúdo"/>
         </SearchBox>
         <IssuesList>
-          {/* <p>{GithubIssuesList[0].title}</p> */}
-          {GithubIssuesList.map(issue => {
+          {GithubIssuesList?.issues.map(issue => {
             return (
-              // <a onClick={redirectDetails(issue.number)}>
               <a  onClick={() => redirectDetails(issue.number)}>
                 <Issue key={issue.title} title={issue.title} description={issue.body} created_at={issue.created_at} />
               </a>
-              // <Post
-              //   key={post.id}
-              //   post={post}
-              // />
             )
           })}
-          {/* <Issue/> */}
-          {/* <Issue/> */}
         </IssuesList>
     </Container>
     )
