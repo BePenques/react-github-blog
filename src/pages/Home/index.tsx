@@ -1,8 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+ 
 import { Container, BoxUserInformations,IssuesList, SearchBoxStyle, SearchInput } from "./styles";
 import { GithubUserInformations } from "./components/GithubUserInformations";
 import { Issue } from "./components/Issue";
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { useEffect, useState} from "react";
 import { api } from "../../lib/axios";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";

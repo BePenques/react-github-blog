@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+ 
  
  
 
@@ -106,6 +106,4 @@ export function Details(){
     )
 }
 
-function utcToZonedTime(arg0: Date, arg1: string) {
-    throw new Error("Function not implemented.");
-}
+

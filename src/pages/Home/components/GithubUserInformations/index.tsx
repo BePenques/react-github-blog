@@ -2,12 +2,13 @@ import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import { GithubUserInformationsStyle,GithubUserTags, GithubLink, GithubImage} from "./styles";
 import {  faArrowUpRightFromSquare, faBuilding, faUserGroup  } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { useEffect, useState } from "react";
+import { useEffect, useState, memo } from "react";
+// import { useEffect, useState, useCallback } from "react";
 import { api } from "../../../../lib/axios";
 
 
 
-export function GithubUserInformations(){
+ function GithubUserInformationsComponent(){
 
     interface GithubUserInfos{
         login: string;
@@ -21,9 +22,15 @@ export function GithubUserInformations(){
     
       const [GithubUserInfos, setGithubUserInfos] = useState<GithubUserInfos>()
     
+        // const  fetchUserData = useCallback(
+        //     async()=>{
+        //         const response = await api.get('/users/BePenques')
+        //         setGithubUserInfos(response.data)
+        //       }
+        //     ,[]
+        // )
         async function fetchUserData(){
           const response = await api.get('/users/BePenques')
-          // console.log(response)
           setGithubUserInfos(response.data)
         }
     
@@ -43,13 +50,11 @@ export function GithubUserInformations(){
         <>
             <GithubImage src={GithubUserInfos?.avatar_url} alt="" />
             <GithubUserInformationsStyle>
-                {/* <a  onClick={() => redirectGithub()}> */}
                 <GithubLink onClick={() => redirectGithub()}>           
                     <p>GITHUB</p>
                     
                     <FontAwesomeIcon icon={faArrowUpRightFromSquare} fontSize="12"/> 
                 </GithubLink>      
-                {/* </a>   */}
                 <h3>{GithubUserInfos?.name}</h3>
                 <p>{GithubUserInfos?.bio}</p>
                 <GithubUserTags>
@@ -70,3 +75,5 @@ export function GithubUserInformations(){
         </>
     )
 }
+
+export const GithubUserInformations = memo(GithubUserInformationsComponent)
