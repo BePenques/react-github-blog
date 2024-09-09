@@ -11,8 +11,8 @@ import { api } from "../../lib/axios";
 import { useEffect, useState } from "react";
 import Markdown from 'react-markdown'
 import { useNavigate } from "react-router-dom";
-// import {  formatDistanceToNow  } from 'date-fns';
-// import {ptBR}  from 'date-fns/locale/pt-BR';
+import {  formatDistanceToNow, format  } from 'date-fns';
+import {ptBR}  from 'date-fns/locale/pt-BR';
 // import { format, toZonedTime } from 'date-fns-tz';
 
 export function Details(){
@@ -42,21 +42,20 @@ export function Details(){
          fetchIssueDetailsData();
       },[])
 
-    //   const createdAt = GithubIssuesDetails?.created_at;
-    //   if (createdAt) {
-        //   const zonedDate = toZonedTime(new Date(createdAt || ''), 'America/Sao_Paulo'); // exemplo para fuso horário de SP
-        //   const publishedDateFormated = format(zonedDate, "d 'de' LLLL 'às' HH:mm'h'", {
-        //       locale: ptBR,
-        //   });
-    //   }
-
-    // const publishedDateFormated = format(GithubIssuesDetails?.created_at || '', "d 'de' LLLL 'às' HH:mm'h'", {
-    //     locale: ptBR,
-    // });
-    // const publishedDateRelativeNow = formatDistanceToNow(zonedDate || '',{
-    //     locale: ptBR,
-    //     addSuffix: true
-    // })
+      const createdAt = GithubIssuesDetails?.created_at;
+      let publishedDateFormated;
+      let publishedDateRelativeNow;
+      
+      if (createdAt) {
+         publishedDateFormated = format(createdAt, "d 'de' LLLL 'às' HH:mm'h'", {
+            locale: ptBR,
+          })
+           publishedDateRelativeNow = formatDistanceToNow(createdAt,{
+            locale: ptBR,
+            addSuffix: true
+          })
+      }
+   
    function redirectGithub(){
     window.open(
         `${GithubIssuesDetails?.html_url}`,
@@ -89,9 +88,11 @@ export function Details(){
                 </span>
                 <span>
                     <FontAwesomeIcon icon={faCalendarDay} color="#3A536B" fontSize={18}/>
-                    {/* <time title={publishedDateFormated} dateTime={GithubIssuesDetails?.created_at.toString()}>
+                    {createdAt && 
+                    <time title={publishedDateFormated} dateTime={GithubIssuesDetails?.created_at.toString()}>
                         {publishedDateRelativeNow}
-                    </time> */}
+                    </time>
+                    }
                 </span>
                 <span>
                     <FontAwesomeIcon icon={faComment} color="#3A536B" fontSize={18}/>
